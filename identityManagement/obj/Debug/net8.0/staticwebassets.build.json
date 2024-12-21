@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "a2h6IQY9ZVRhfkuSqS220/gjXKYseVS+GvsmzZtO/Qo=",
+  "Source": "identityManagement",
+  "BasePath": "_content/identityManagement",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
