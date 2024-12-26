@@ -8,7 +8,7 @@ namespace identityManagement.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class userController : ControllerBase
+    public class AccountsController : ControllerBase
     {
         
     }
