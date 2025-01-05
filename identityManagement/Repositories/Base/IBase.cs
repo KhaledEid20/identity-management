@@ -7,5 +7,6 @@ namespace identityManagement.Repositories.Base
 {
     public interface IBase<T> where T : class
     {
+        Task<User> ValidateUser(string Email);
     }
 }

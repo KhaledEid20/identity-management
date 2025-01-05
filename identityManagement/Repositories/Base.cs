@@ -1,28 +1,43 @@
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Humanizer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace identityManagement.Repositories
 {
     public class Base<T> : IBase<T> where T:class
     {
-        private AppdbContext context;
+        public UserManager<User> _userManager;
+        public RoleManager<IdentityRole> _roleManager;
 
-        AppdbContext _context{get; set;}
-        UserManager<User> _userManager{get; set;}
-        RoleManager<Role> _roleManager{get; set;}
-        public Base(AppdbContext context , UserManager<User> userManager , RoleManager<Role> roleManager)
+
+        public Base(UserManager<User> userManager , RoleManager<IdentityRole> roleManager)
         {
-            this._context = context;
             this._roleManager = roleManager;
             this._userManager= userManager;
         }
 
-        public Base(AppdbContext context)
+        public async Task<User> ValidateUser(string Email)
         {
-            this.context = context;
+            var user = await _userManager.FindByEmailAsync(Email);
+            if(user == null){
+                return null;
+            }
+            return user;
+        }
+
+        public async Task<IdentityRole> ValidateRole(string roleName)
+        {
+            var role = await _roleManager.FindByNameAsync(roleName);
+            if(role == null){
+                return null;
+            }
+            return role;
         }
     }
 }

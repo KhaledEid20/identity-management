@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls("https://localhost:7037");
 
 builder.Services.AddControllers();
-builder.Services.AddIdentity<User , Role>(o=>{
+builder.Services.AddIdentity<User , IdentityRole>(o=>{
     o.Password.RequireDigit = true;
     o.Password.RequireLowercase = false; 
     o.Password.RequireUppercase = false; 

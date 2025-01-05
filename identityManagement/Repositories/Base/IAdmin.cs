@@ -7,6 +7,7 @@ namespace identityManagement.Repositories.Base
 {
     public interface IAdmin
     {
-        
+        Task<string> assignRoleToUser(string Email , string Role);
+        Task<string> AddRole(string Role);
     }
 }
