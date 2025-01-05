@@ -24,16 +24,5 @@ namespace identityManagement.Repositories
         {
             this.context = context;
         }
-        public async Task<authResult> generateTokens(User user)
-        {
-            if(user == null){
-                return new authResult{
-                    result = false,
-                    error = "User do not exist"
-                };
-            }
-            
-            throw new NotImplementedException();
-        }
     }
 }

@@ -7,7 +7,7 @@ namespace identityManagement.Repositories.Base
 {
     public interface IUnitofwork
     {
-        IAccount _account{get; set;}
+        IAuthentication _authentication{get; set;}
         IClaims _claims{get; set;}
         IAdmin _admin{get; set;}
     }

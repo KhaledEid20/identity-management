@@ -25,9 +25,8 @@ namespace identityManagement.Repositories
         }
         public async Task<authResult> Login(LoginDto user)
         {
-            _user = await _userManager.FindByNameAsync(user.UserName);
-            var result = await _userManager.CheckPasswordAsync(_user,user.password);
-            if(_user == null || result == false){
+            _user = await _userManager.FindByEmailAsync(user.Email);
+            if(_user == null){
                 return new authResult{
                   token = "",
                   RefreshToken="",
@@ -36,12 +35,18 @@ namespace identityManagement.Repositories
                 };
             }
             var Token = await GetToken();
+            if(await _userManager.CheckPasswordAsync(_user,user.password)){
+                return new authResult{
+                    token = Token,
+                    RefreshToken="",
+                    result = true,
+                    error = ""
+                }; 
+            }
             return new authResult{
-                token = Token,
-                RefreshToken="",
-                result = true,
-                error = ""
-            }; 
+                result = false,
+                error = "username or password Invalid"
+            };
         }
         public async Task<authResult> Register(RegisterDto register)
         {
@@ -53,7 +58,6 @@ namespace identityManagement.Repositories
             };
             //create the user with the password
             var result = await _userManager.CreateAsync(user , register.password);
-            await _userManager.AddToRoleAsync(user , "regular-user");
             _user = user;
             var Token = await GetToken();
             if(result.Succeeded){

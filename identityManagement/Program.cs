@@ -10,9 +10,17 @@ using identityManagement.Extention;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.UseUrls("https://localhost:7037");
 
 builder.Services.AddControllers();
-builder.Services.AddIdentity<User , Role>()
+builder.Services.AddIdentity<User , Role>(o=>{
+    o.Password.RequireDigit = true;
+    o.Password.RequireLowercase = false; 
+    o.Password.RequireUppercase = false; 
+    o.Password.RequireNonAlphanumeric = false; 
+    o.Password.RequiredLength = 10; 
+    o.User.RequireUniqueEmail = true;
+})
     .AddEntityFrameworkStores<AppdbContext>();;
 
 

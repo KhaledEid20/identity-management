@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace identityManagement.Data
 {
-    public class AppdbContext : IdentityDbContext<IdentityUser>
+    public class AppdbContext : IdentityDbContext<User , Role , string>
     {
         public AppdbContext(DbContextOptions<AppdbContext> options):base(options)
         {

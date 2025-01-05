@@ -142,3 +142,5 @@ B:\Projects\Identity-management\identityManagement\obj\Debug\net8.0\refint\ident
 B:\Projects\Identity-management\identityManagement\obj\Debug\net8.0\identityManagement.pdb
 B:\Projects\Identity-management\identityManagement\obj\Debug\net8.0\identityManagement.genruntimeconfig.cache
 B:\Projects\Identity-management\identityManagement\obj\Debug\net8.0\ref\identityManagement.dll
+B:\Projects\Identity-management\identityManagement\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+B:\Projects\Identity-management\identityManagement\obj\Debug\net8.0\identityManagement.sourcelink.json
