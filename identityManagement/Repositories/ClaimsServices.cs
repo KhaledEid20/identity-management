@@ -38,7 +38,7 @@ namespace identityManagement.Repositories
             }
             try{
                 var claim = new Claim(claimName , ClaimValue);
-                await _userManager.AddClaimAsync(_user , claim);
+                await _roleManager.AddClaimAsync(role , claim);
                 return "The Claim Added Succesfully to the role";
             }
             catch{

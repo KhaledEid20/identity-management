@@ -13,21 +13,41 @@ namespace identityManagement.Controllers
         {
             _unit=unit;
         }
-        [HttpGet("assignRoleToUser")]
+        [HttpPost("assignRoleToUser")]
         public async Task<ActionResult> roleToUser(string Email , string Role){
-            return Ok(await _unit._admin.assignRoleToUser(Email , Role));
+            if(ModelState.IsValid){
+                return Ok(await _unit._admin.assignRoleToUser(Email , Role));
+            }
+            else{
+                return BadRequest();
+            }
         }
-        [HttpGet("AddRole")]
+        [HttpPost("AddRole")]
         public async Task<ActionResult> AddRole(string Role){
-            return Ok(await _unit._admin.AddRole(Role));
+            if(ModelState.IsValid){
+                return Ok(await _unit._admin.AddRole(Role));
+            }
+            else{
+                return BadRequest();
+            }
         }
-        [HttpGet("AddClaimToUser")]
+        [HttpPost("AddClaimToUser")]
         public async Task<ActionResult> AddClaimToUser(string Email, string ClaimName , string ClaimValue){
-            return Ok(await _unit._claims.addClaimToUser(Email , ClaimName , ClaimValue));
+            if(ModelState.IsValid){
+                return Ok(await _unit._claims.addClaimToUser(Email , ClaimName , ClaimValue));
+            }
+            else{
+                return BadRequest();
+            }
         }
-        [HttpGet("addClaimTORole")]
+        [HttpPost("addClaimTORole")]
         public async Task<ActionResult> ClaimToRole(string Rolename, string claimName, string ClaimValue){
-            return Ok(await _unit._claims.addClaimToRole(Rolename , claimName , ClaimValue));
+            if(ModelState.IsValid){
+                return Ok(await _unit._claims.addClaimToRole(Rolename , claimName , ClaimValue));
+            }
+            else{
+                return BadRequest();
+            }
         }
     }
 }
