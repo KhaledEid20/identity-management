@@ -9,7 +9,7 @@ namespace identityManagement.DTOs
     {
         public string token { get; set; }
         public string RefreshToken { get; set; }
-        public bool result { get; set; }
+        public bool result { get; set; } = false;
         public string error { get; set; }
     }
 }

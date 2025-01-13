@@ -10,5 +10,6 @@ namespace identityManagement.Repositories.Base
         IAuthentication _authentication{get; set;}
         IClaims _claims{get; set;}
         IAdmin _admin{get; set;}
+        IEmail _email{get; set;}
     }
 }

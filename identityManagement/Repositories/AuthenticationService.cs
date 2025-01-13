@@ -27,6 +27,12 @@ namespace identityManagement.Repositories
                   error = "The User Does not exist"
                 };
             }
+            var EmailConfirmed = await _userManager.IsEmailConfirmedAsync(_user);
+            if(!EmailConfirmed){
+                return new authResult{
+                    error = "The Email is not confirmed",
+                };
+            }
             var Token = await GetToken(Exp:true);
             if(await _userManager.CheckPasswordAsync(_user,user.password)){
                 return new authResult{
@@ -41,7 +47,7 @@ namespace identityManagement.Repositories
                 error = "username or password Invalid"
             };
         }
-        public async Task<string> Register(RegisterDto register)
+        public async Task<resultRegisterDTO> Register(RegisterDto register)
         {
             // create the user object
             _user = new User{
@@ -53,11 +59,20 @@ namespace identityManagement.Repositories
                 //create the user with the password
                 var result = await _userManager.CreateAsync(_user , register.password);
 
-                if(result.Succeeded) return "Registeration Succeded";
-                
-                return "The user can't be created";
+                if(result.Succeeded){
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(_user);
+                    return new resultRegisterDTO{
+                        email = _user.Email,
+                        code = code
+                    };
+                } 
+                return new resultRegisterDTO{
+                    error = "The user can't be created"
+                };
             };
-            return "The user alreay exist";
+            return new resultRegisterDTO{
+                error = $"{_user.Email} The user alreay exist"
+            };
         }
 
         public async Task<TokenDto> RefreshToken(TokenDto tokenDto)

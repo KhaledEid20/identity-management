@@ -15,13 +15,11 @@ namespace identityManagement.Repositories
         public UserManager<User> _userManager;
         public RoleManager<IdentityRole> _roleManager;
 
-
         public Base(UserManager<User> userManager , RoleManager<IdentityRole> roleManager)
         {
             this._roleManager = roleManager;
             this._userManager= userManager;
         }
-
         public async Task<User> ValidateUser(string Email)
         {
             var user = await _userManager.FindByEmailAsync(Email);

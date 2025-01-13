@@ -11,11 +11,14 @@ namespace identityManagement.Repositories
         public IAuthentication _authentication { get; set; }
         public IClaims _claims { get; set; }
         public IAdmin _admin { get; set; }
-        public Unitofwork(IAuthentication account , IClaims claims , IAdmin admin)
+        public IEmail _email { get; set; }
+
+        public Unitofwork(IAuthentication account , IClaims claims , IAdmin admin , IEmail email)
         {
             this._authentication = account;
             this._claims = claims;
             this._admin = admin;
+            this._email = email;
         }
     }
 }
