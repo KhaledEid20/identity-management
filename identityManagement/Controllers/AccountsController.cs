@@ -21,7 +21,7 @@ namespace identityManagement.Controllers
             if(ModelState.IsValid){
                 return Ok(await _unit._authentication.Login(user));
             };
-            return BadRequest();
+            return Unauthorized();
         }
 
         [HttpPost("register")]
@@ -30,6 +30,10 @@ namespace identityManagement.Controllers
                 return Ok(await _unit._authentication.Register(user));
             };
             return BadRequest();
+        }
+        [HttpPost("refresh")]
+        public async Task<IActionResult> refresh(TokenDto tokenDto){
+            return Ok(await _unit._authentication.RefreshToken(tokenDto));
         }
     }
 }

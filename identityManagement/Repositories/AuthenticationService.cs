@@ -2,6 +2,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
@@ -26,11 +27,11 @@ namespace identityManagement.Repositories
                   error = "The User Does not exist"
                 };
             }
-            var Token = await GetToken();
+            var Token = await GetToken(Exp:true);
             if(await _userManager.CheckPasswordAsync(_user,user.password)){
                 return new authResult{
-                    token = Token,
-                    RefreshToken="",
+                    token = Token.AccessToken,
+                    RefreshToken=Token.RefreshToken,
                     result = true,
                     error = ""
                 }; 
@@ -40,7 +41,7 @@ namespace identityManagement.Repositories
                 error = "username or password Invalid"
             };
         }
-        public async Task<authResult> Register(RegisterDto register)
+        public async Task<string> Register(RegisterDto register)
         {
             // create the user object
             _user = new User{
@@ -51,38 +52,45 @@ namespace identityManagement.Repositories
             if(await ValidateUser(_user.Email)==null){
                 //create the user with the password
                 var result = await _userManager.CreateAsync(_user , register.password);
-                var Token = await GetToken();
-                if(result.Succeeded){
-                    return new authResult{
-                        token = Token,
-                        RefreshToken = "Refresh Token Here",
-                        result = true,
-                        error = ""
-                    };
-                }
-                return new authResult{
-                    token = "",
-                    RefreshToken = "",
-                    result = false,
-                    error = "The user can't be created"
-                };
-            }
-            return new authResult{
-                token = "",
-                RefreshToken = "",
-                result = false,
-                error = "The User already Exist"
+
+                if(result.Succeeded) return "Registeration Succeded";
+                
+                return "The user can't be created";
             };
+            return "The user alreay exist";
         }
 
-        #region Token Configuation
-        public async Task<string> GetToken()
+        public async Task<TokenDto> RefreshToken(TokenDto tokenDto)
+        {
+            var principal = getPrincipalFromExpiryDate(tokenDto.AccessToken);
+            var user = await _userManager.FindByNameAsync(principal.Identity.Name);
+            var exp = user.ExpirationDate;
+            var dn = DateTime.UtcNow;
+            if(user == null || user.RefreshToken != tokenDto.RefreshToken || user.ExpirationDate <= DateTime.UtcNow){
+                throw new Exception("Invalid Client Exception");
+            }
+            _user = user;
+            // Console.WriteLine(user.RefreshToken , tokenDto.RefreshToken);
+            // Console.WriteLine($"{user.ExpirationDate}" , DateTime.UtcNow);
+            return await GetToken(Exp:false);
+        }
+        public async Task<TokenDto> GetToken(bool Exp)
         {
             var sc = GetSigningCredentials();
             var claims = await GetClaims();
             var token = generateTokens(sc , claims);  // create the json web token
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            // return 
+            var refreshtoken = generateRefreshToken();
+            _user.RefreshToken = refreshtoken;
+            if(Exp){
+                _user.ExpirationDate = DateTime.UtcNow.AddMinutes(7);
+            }
+            await _userManager.UpdateAsync(_user);
+            var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+            return new TokenDto(accessToken, refreshtoken);
         }
+
+        #region Token Configuation
 
         private async Task<List<Claim>> GetClaims(){
             List<Claim> claims = new List<Claim>();
@@ -107,14 +115,49 @@ namespace identityManagement.Repositories
         }
 
         private JwtSecurityToken generateTokens(SigningCredentials sc , List<Claim> claims){
-            var jwtSetting = _configuration.GetSection("jwtSetting");
+            var jwtSetting = _configuration.GetSection("jwtSettings");
             var tokens = new JwtSecurityToken (
                 issuer : jwtSetting["Issuer"],
                 claims : claims,
-                expires : DateTime.Now.AddMinutes(20),
+                expires : DateTime.UtcNow.AddSeconds(5),
                 signingCredentials: sc
             );
             return tokens;
+        }
+
+        private string generateRefreshToken(){
+            var randomNumber = new Byte[32];
+            using(var rt = RandomNumberGenerator.Create()){
+                rt.GetBytes(randomNumber);
+                return Convert.ToBase64String(randomNumber);
+            }
+        }
+        // Take the principal of the Expired Token
+        private ClaimsPrincipal getPrincipalFromExpiryDate(string token){
+            var jwtSetting = _configuration.GetSection("jwtSettings");
+            var validateToken = new TokenValidationParameters{ // Validate the token
+                ValidateIssuer = true,
+                ValidateAudience = false,
+                ValidateIssuerSigningKey = true,
+                ValidateLifetime = true,
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET"))
+                ),
+                ValidIssuer = jwtSetting["Issuer"]
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            SecurityToken securityToken;
+            var principal = tokenHandler.ValidateToken(token , validateToken , out securityToken); // give the token TokenValidation and the output goes to the output
+            var jwtSecurityToken = securityToken as JwtSecurityToken;
+
+            if(jwtSecurityToken == null || !jwtSecurityToken.Header.Alg
+            .Equals(SecurityAlgorithms.HmacSha256 , StringComparison.InvariantCultureIgnoreCase)){
+
+                throw new SecurityTokenException("Invalid Token");
+
+            }
+            return principal;
         }
         #endregion
     }

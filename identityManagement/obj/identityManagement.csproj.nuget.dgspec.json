@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "B:\\Projects\\Identity-management\\identityManagement\\identityManagement.csproj": {}
+    "b:\\Projects\\Identity-management\\identityManagement\\identityManagement.csproj": {}
   },
   "projects": {
-    "B:\\Projects\\Identity-management\\identityManagement\\identityManagement.csproj": {
+    "b:\\Projects\\Identity-management\\identityManagement\\identityManagement.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "B:\\Projects\\Identity-management\\identityManagement\\identityManagement.csproj",
+        "projectUniqueName": "b:\\Projects\\Identity-management\\identityManagement\\identityManagement.csproj",
         "projectName": "identityManagement",
-        "projectPath": "B:\\Projects\\Identity-management\\identityManagement\\identityManagement.csproj",
+        "projectPath": "b:\\Projects\\Identity-management\\identityManagement\\identityManagement.csproj",
         "packagesPath": "C:\\Users\\khale\\.nuget\\packages\\",
-        "outputPath": "B:\\Projects\\Identity-management\\identityManagement\\obj\\",
+        "outputPath": "b:\\Projects\\Identity-management\\identityManagement\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\khale\\AppData\\Roaming\\NuGet\\NuGet.Config",
